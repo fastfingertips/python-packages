@@ -7,7 +7,7 @@ export function initRegistryFilter() {
 
   if (!filterInput) return;
 
-  let currentCategory = 'all';
+  let currentCategory = localStorage.getItem('registry-category') || 'all';
   let searchQuery = '';
 
   function applyFilters() {
@@ -21,23 +21,25 @@ export function initRegistryFilter() {
       const matchesSearch = name.includes(searchQuery) || desc.includes(searchQuery);
       const matchesCategory = currentCategory === 'all' || itemCategory === currentCategory;
 
-      const shouldShow = matchesSearch && matchesCategory;
-      (item as HTMLElement).style.display = shouldShow ? 'grid' : 'none';
+      (item as HTMLElement).style.display = (matchesSearch && matchesCategory) ? 'grid' : 'none';
     });
 
-    // Handle section visibility in non-flat mode
     if (!isFlat) {
       sections.forEach((section) => {
-        const sectionId = section.getAttribute('id');
-        const sectionCat = section.querySelector('h2')?.textContent || '';
-        
-        // If searching or category is 'all', show sections that have visible items
-        // If a specific category is selected and we are NOT in flat mode, we might want to just scroll
         const hasVisibleItems = Array.from(section.querySelectorAll('.lib-item')).some(
           (item) => (item as HTMLElement).style.display !== 'none'
         );
         section.style.display = hasVisibleItems ? 'block' : 'none';
       });
+    }
+  }
+
+  function scrollToCategory(cat: string) {
+    const targetId = cat.toLowerCase().replace('/', '-');
+    const targetEl = document.getElementById(targetId);
+    if (targetEl) {
+      const navHeight = 44 + 60; // navbar + controls
+      window.scrollTo({ top: targetEl.offsetTop - navHeight, behavior: 'smooth' });
     }
   }
 
@@ -57,28 +59,15 @@ export function initRegistryFilter() {
       categoryButtons.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
 
-      const label = document.querySelector('#category-dropdown .current-value');
-      if (label) label.textContent = btn.textContent;
-
-      const isFlat = main?.classList.contains('is-flat');
-      
-      if (!isFlat && cat !== 'all') {
-        const targetId = cat.toLowerCase().replace('/', '-');
-        const targetEl = document.getElementById(targetId);
-        if (targetEl) {
-          const navHeight = 44 + 60; // navbar + controls
-          window.scrollTo({
-            top: targetEl.offsetTop - navHeight,
-            behavior: 'smooth'
-          });
-        }
+      if (!main?.classList.contains('is-flat') && cat !== 'all') {
+        scrollToCategory(cat);
       }
 
       applyFilters();
     });
   });
 
-  // Handle Cmd+K to focus
+  // Keyboard Shortcuts
   window.addEventListener('keydown', (e) => {
     if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
       e.preventDefault();
@@ -86,11 +75,9 @@ export function initRegistryFilter() {
     }
   });
 
-  // Apply saved category on init
-  const savedCategory = localStorage.getItem('registry-category') || 'all';
-  if (savedCategory !== 'all') {
-    currentCategory = savedCategory;
-    const activeBtn = document.querySelector(`.category-btn[data-category="${savedCategory}"]`);
+  // Initialize from saved state
+  if (currentCategory !== 'all') {
+    const activeBtn = document.querySelector(`.category-btn[data-category="${currentCategory}"]`);
     if (activeBtn) {
       categoryButtons.forEach(b => b.classList.remove('active'));
       activeBtn.classList.add('active');

@@ -72,8 +72,10 @@ const { categories } = Astro.props;
   import { initSorter } from '../client/sorter';
   import { initRegistryFilter } from '../client/registryFilter';
   import { initGroupToggle } from '../client/groupToggle';
+  import { initDropdowns } from '../client/ui/dropdown';
   
   const init = () => {
+    initDropdowns();
     initGroupToggle();
     initRegistryFilter();
     initSorter();

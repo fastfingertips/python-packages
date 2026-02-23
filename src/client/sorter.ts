@@ -37,35 +37,6 @@ export function applySort(sortType?: string | null) {
 
 export function initSorter() {
   const sortButtons = document.querySelectorAll('.sort-btn');
-  const dropdowns = document.querySelectorAll('.custom-dropdown');
-
-  // Toggle dropdowns
-  dropdowns.forEach((dropdown) => {
-    const trigger = dropdown.querySelector('.dropdown-trigger');
-    const items = dropdown.querySelectorAll('.dropdown-item');
-    const currentValue = dropdown.querySelector('.current-value');
-
-    trigger?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const isActive = dropdown.classList.contains('active');
-      dropdowns.forEach((d) => d.classList.remove('active'));
-      if (!isActive) dropdown.classList.add('active');
-    });
-
-    items.forEach((item) => {
-      item.addEventListener('click', () => {
-        if (currentValue && item.textContent) {
-          currentValue.textContent = item.textContent;
-        }
-        dropdown.classList.remove('active');
-      });
-    });
-  });
-
-  // Close dropdowns on outside click
-  window.addEventListener('click', () => {
-    dropdowns.forEach((d) => d.classList.remove('active'));
-  });
 
   // Handle sort button clicks
   sortButtons.forEach((btn) => {
@@ -97,4 +68,3 @@ export function initSorter() {
   }
   applySort(savedSort);
 }
-
