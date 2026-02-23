@@ -1,0 +1,87 @@
+---
+import { REGISTRY_CONFIG } from '../config';
+---
+<nav class="navbar">
+  <div class="container nav-content">
+    <div class="brand-group">
+      <div class="logo-dot"></div>
+      <h1 class="nav-brand">{REGISTRY_CONFIG.site.title}</h1>
+    </div>
+    <div class="nav-actions">
+      <a href="https://github.com/fastfingertips/python-packages" target="_blank" class="github-link">GitHub ↗</a>
+    </div>
+  </div>
+</nav>
+
+<style>
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: var(--bg);
+    border-bottom: 1px solid var(--border);
+    height: var(--nav-height);
+    display: flex;
+    align-items: center;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background-color: rgba(255, 255, 255, 0.75);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .navbar { background-color: rgba(10, 10, 10, 0.75); }
+  }
+
+  .nav-content {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .brand-group {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .logo-dot {
+    width: 6px;
+    height: 6px;
+    background-color: var(--text);
+    border-radius: 2px;
+  }
+
+  .nav-brand {
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin: 0;
+  }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+  }
+
+
+  .github-link {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--text);
+    text-decoration: none;
+    border: 1px solid var(--border);
+    padding: 3px 8px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+
+  .github-link:hover {
+    background-color: var(--text);
+    color: var(--bg);
+    border-color: var(--text);
+  }
+</style>

@@ -1,0 +1,59 @@
+---
+interface Props {
+  lib: any;
+  cacheTimestamp: number;
+  oldestPart?: string;
+}
+
+const { lib, cacheTimestamp, oldestPart = 'full pull' } = Astro.props;
+const repoUrl = lib.repo ? `https://github.com/${lib.repo}` : null;
+const ItemTag = repoUrl ? 'a' : 'div';
+---
+
+<ItemTag 
+  href={repoUrl}
+  target={repoUrl ? "_blank" : undefined}
+  class={`lib-item no-repo`}
+  data-id={lib.id}
+  data-name={lib.name}
+  data-status={lib.status === 'preferred' ? 0 : (lib.status === 'essential' ? 1 : 2)}
+  data-cache-age={cacheTimestamp}
+  data-oldest-part={oldestPart}
+  data-stars="0"
+  data-updated="0"
+>
+  <div class="lib-name">
+    {lib.name}
+    {repoUrl && <span style="font-size: 0.6rem; opacity: 0.4; margin-left: 4px;">↗</span>}
+  </div>
+  
+  <div style="display: flex; gap: 6px; align-items: center;">
+    <span class={`status-tag status-${lib.status}`}>
+      {lib.status}
+    </span>
+    <span class="rec-badge-container" style="display: contents;"></span>
+  </div>
+
+  <div class="description lib-desc" title="Repository Description">
+    <div class="skeleton" style="width: 100%; height: 0.8rem; margin-top: 2px;"></div>
+  </div>
+
+  <div class="stat-cell stars-val">
+    <div class="skeleton" style="width: 40px; float: right;"></div>
+  </div>
+
+  <div class="stat-cell release-val" title="Latest GitHub Release">
+    <div class="skeleton" style="width: 50px; float: right;"></div>
+  </div>
+
+  <div class="stat-cell update-val" title="Last Repository Push">
+    <div class="skeleton" style="width: 60px; float: right;"></div>
+  </div>
+</ItemTag>
+
+<script>
+  import { initStatsFetcher } from '../client/statsFetcher';
+  
+  initStatsFetcher();
+  document.addEventListener('astro:after-swap', initStatsFetcher);
+</script>

@@ -1,0 +1,44 @@
+---
+interface Props {
+  categories: string[];
+}
+const { categories } = Astro.props;
+---
+<div class="controls-wrapper">
+  <div class="container">
+    <div class="controls">
+      <nav class="toc">
+        {categories.map(category => (
+          <a href={`#${category.toLowerCase().replace('/', '-')}`}>
+            {category}
+          </a>
+        ))}
+      </nav>
+      
+      <div class="sorter">
+        <span style="opacity: 0.4; font-size: 0.6rem; margin-right: 0.5rem;">SORT:</span>
+        <button class="sort-btn active" data-sort="default">PREF</button>
+        <button class="sort-btn" data-sort="stars">STARS</button>
+        <button class="sort-btn" data-sort="newest">NEW</button>
+        <button class="sort-btn" data-sort="oldest">OLD</button>
+        <button class="sort-btn" data-sort="name">A-Z</button>
+      </div>
+    </div>
+
+    <!-- Global Sticky Table Header -->
+    <div class="list-header">
+      <div>NAME</div>
+      <div>STATUS</div>
+      <div>DESCRIPTION</div>
+      <div style="text-align: right;">STARS</div>
+      <div style="text-align: right;">SHIPMENT</div>
+      <div style="text-align: right;">COMMIT</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { initSorter } from '../client/sorter';
+  document.addEventListener('astro:page-load', initSorter);
+  document.addEventListener('DOMContentLoaded', initSorter);
+</script>
