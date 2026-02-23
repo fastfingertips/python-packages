@@ -1,0 +1,133 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import RegistryControls from '../components/RegistryControls.astro';
+import RegistrySection from '../components/RegistrySection.astro';
+import { libraries } from '../data/libraries';
+import { getCacheMeta } from '../utils/cache';
+import { formatDistanceToNow } from 'date-fns';
+import SearchOverlay from '../components/SearchOverlay.astro';
+
+interface Props {}
+
+const categories = [...new Set(libraries.map(lib => lib.category))];
+const cacheMeta = getCacheMeta();
+const lastDeployText = formatDistanceToNow(new Date(), { addSuffix: true });
+---
+
+<Layout title="Lib Registry">
+  <Navbar />
+  <RegistryControls categories={categories} />
+
+  <div class="container shell-container">
+    <main id="registry-main" class="view-compact">
+      <div id="flat-list" class="list" style="display: none;"></div>
+      {categories.map(category => (
+        <RegistrySection 
+          category={category} 
+          libraries={libraries.filter(l => l.category === category)}
+          cacheMeta={cacheMeta}
+        />
+      ))}
+    </main>
+
+    <footer class="compact-footer">
+      <div class="footer-left">
+        <div class="system-status">
+          <div class="status-indicator"></div>
+          <span class="status-text"><span>Initializing...</span></span>
+        </div>
+        <span class="separator">|</span>
+        <span class="system-details">
+          <span><span id="synced-count">0/0</span> Synced</span>
+          <span class="separator">/</span>
+          <span id="oldest-node">Scanning</span>
+        </span>
+      </div>
+
+      <div class="footer-right">
+        <span>By <a href="https://github.com/fastfingertips" target="_blank">FastFingertips</a></span>
+        <span class="separator">•</span>
+        <a href="https://github.com/fastfingertips/python-packages" target="_blank">Source</a>
+        <span class="separator">•</span>
+        <span class="deploy-stamp">Built {lastDeployText}</span>
+      </div>
+    </footer>
+  </div>
+</Layout>
+
+<style>
+  .compact-footer {
+    margin-top: auto;
+    padding: 1rem 1.5rem;
+    margin-bottom: 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    border-radius: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.02);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    .compact-footer { background: rgba(255, 255, 255, 0.03); }
+  }
+
+  .footer-left, .footer-right {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .compact-footer a {
+    color: var(--text);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--text-dim);
+  }
+
+  .compact-footer a:hover {
+    opacity: 0.7;
+  }
+
+  .system-status {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 700;
+  }
+
+  .status-indicator {
+    width: 5px;
+    height: 5px;
+    border-radius: 0;
+    background-color: #eab308;
+    animation: pulse 2s infinite;
+  }
+
+  .system-details {
+    display: flex;
+    gap: 0.5rem;
+    opacity: 0.8;
+  }
+
+  .separator {
+    opacity: 0.2;
+  }
+
+  @keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.4; }
+    100% { opacity: 1; }
+  }
+</style>
+
+<script>
+  import { initSystemMonitor } from '../client/systemMonitor';
+  document.addEventListener('astro:page-load', initSystemMonitor);
+  document.addEventListener('DOMContentLoaded', initSystemMonitor);
+</script>

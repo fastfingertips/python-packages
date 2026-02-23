@@ -16,6 +16,7 @@ const ItemTag = repoUrl ? 'a' : 'div';
   class={`lib-item no-repo`}
   data-id={lib.id}
   data-name={lib.name}
+  data-category={lib.category}
   data-status={lib.status === 'preferred' ? 0 : (lib.status === 'essential' ? 1 : 2)}
   data-cache-age={cacheTimestamp}
   data-oldest-part={oldestPart}
