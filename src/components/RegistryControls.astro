@@ -7,21 +7,52 @@ const { categories } = Astro.props;
 <div class="controls-wrapper">
   <div class="container">
     <div class="controls">
-      <nav class="toc">
-        {categories.map(category => (
-          <a href={`#${category.toLowerCase().replace('/', '-')}`}>
-            {category}
-          </a>
-        ))}
-      </nav>
-      
-      <div class="sorter">
-        <span style="opacity: 0.4; font-size: 0.6rem; margin-right: 0.5rem;">SORT:</span>
-        <button class="sort-btn active" data-sort="default">PREF</button>
-        <button class="sort-btn" data-sort="stars">STARS</button>
-        <button class="sort-btn" data-sort="newest">NEW</button>
-        <button class="sort-btn" data-sort="oldest">OLD</button>
-        <button class="sort-btn" data-sort="name">A-Z</button>
+      <div class="view-switcher">
+        <button id="group-toggle" class="view-btn active" title="Toggle Grouping">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-grouped"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-flat" style="display:none;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line></svg>
+        </button>
+      </div>
+
+      <div class="search-section">
+        <div class="filter-input-wrapper">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="13" height="13"></rect><line x1="21" y1="21" x2="15" y2="15"></line></svg>
+          <input type="text" id="registry-filter" placeholder="FILTER PACKAGES..." autocomplete="off" />
+          <kbd>⌘K</kbd>
+        </div>
+      </div>
+
+      <div class="dropdown-group">
+        <div class="custom-dropdown" id="category-dropdown">
+          <button class="dropdown-trigger">
+            <span class="label">SECTION</span>
+            <span class="current-value">All Sections</span>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="dropdown-menu">
+            <button class="dropdown-item category-btn active" data-category="all">All Sections</button>
+            {categories.map(category => (
+              <button class="dropdown-item category-btn" data-category={category}>
+                {category}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div class="custom-dropdown" id="sort-dropdown">
+          <button class="dropdown-trigger">
+            <span class="label">SORT</span>
+            <span class="current-value" id="current-sort">Preferred</span>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="dropdown-menu">
+            <button class="dropdown-item sort-btn active" data-sort="default">Preferred</button>
+            <button class="dropdown-item sort-btn" data-sort="stars">Stars Count</button>
+            <button class="dropdown-item sort-btn" data-sort="newest">Latest Push</button>
+            <button class="dropdown-item sort-btn" data-sort="oldest">Oldest Push</button>
+            <button class="dropdown-item sort-btn" data-sort="name">Alphabetical</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -39,6 +70,15 @@ const { categories } = Astro.props;
 
 <script>
   import { initSorter } from '../client/sorter';
-  document.addEventListener('astro:page-load', initSorter);
-  document.addEventListener('DOMContentLoaded', initSorter);
+  import { initRegistryFilter } from '../client/registryFilter';
+  import { initGroupToggle } from '../client/groupToggle';
+  
+  const init = () => {
+    initGroupToggle();
+    initRegistryFilter();
+    initSorter();
+  };
+
+  document.addEventListener('astro:page-load', init);
+  document.addEventListener('DOMContentLoaded', init);
 </script>

@@ -1,4 +1,5 @@
 import { REGISTRY_CONFIG } from '../config';
+import { applySort } from './sorter';
 
 export function updateLibraryDOM(item: HTMLElement, data: any) {
   const id = item.getAttribute('data-id');
@@ -103,6 +104,7 @@ export function updateLibraryDOM(item: HTMLElement, data: any) {
       item.setAttribute('data-updated', new Date(data.lastUpdate).getTime().toString());
     }
     item.classList.remove('no-repo');
+    applySort();
   } catch (e) {
     console.error(`[DOM Updater] Failed for ${id}:`, e);
   }
