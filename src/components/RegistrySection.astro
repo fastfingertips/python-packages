@@ -22,7 +22,7 @@ const sortedLibraries = libraries.sort((a, b) => {
   <div class="list" data-category={category}>
     {sortedLibraries.map(lib => {
       const meta = cacheMeta.find(m => m.id === lib.id);
-      return <LibraryRow lib={lib} cacheTimestamp={meta?.timestamp || 0} oldestPart={meta?.oldestPart} />
+      return <LibraryRow lib={lib} cacheTimestamp={meta ? meta.timestamp : -1} oldestPart={meta?.oldestPart} />
     })}
   </div>
 </section>

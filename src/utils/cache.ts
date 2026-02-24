@@ -53,7 +53,13 @@ export function writeCache(id: string, entry: CacheEntry) {
 export function getCacheMeta() {
   const cache = readCache();
   return Object.keys(cache).map((id) => {
-    const ts = cache[id].timestamps || { shipment: cache[id].timestamp || 0 };
+    const legacyTs = cache[id].timestamp || 0;
+    const ts = cache[id].timestamps || { 
+      shipment: legacyTs, 
+      commit: legacyTs, 
+      stars: legacyTs, 
+      description: legacyTs 
+    };
 
     let oldestTimestamp = ts.shipment || 0;
     let oldestPart = 'shipment';
@@ -74,7 +80,7 @@ export function getCacheMeta() {
     return {
       id,
       timestamp: oldestTimestamp,
-      oldestPart: oldestTimestamp === 0 ? 'full pull' : oldestPart
+      oldestPart: oldestTimestamp === 0 ? 'partial update' : oldestPart
     };
   });
 }

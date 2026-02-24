@@ -24,10 +24,12 @@ export const initStatsFetcher = async () => {
   ) as HTMLElement[];
   if (items.length === 0) return;
 
-  // Sort items: 0 (no cache) comes first, then lowest timestamp (oldest)
+  // Sort items: -1 (no cache) comes first, then lowest timestamp (oldest)
   items.sort((a, b) => {
-    const ageA = Number(a.getAttribute('data-cache-age')) || 0;
-    const ageB = Number(b.getAttribute('data-cache-age')) || 0;
+    const attrA = a.getAttribute('data-cache-age');
+    const attrB = b.getAttribute('data-cache-age');
+    const ageA = attrA !== null ? Number(attrA) : -1;
+    const ageB = attrB !== null ? Number(attrB) : -1;
     return ageA - ageB;
   });
 
